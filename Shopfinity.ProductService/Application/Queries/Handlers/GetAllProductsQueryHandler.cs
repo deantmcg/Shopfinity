@@ -25,7 +25,11 @@ namespace Shopfinity.ProductService.Application.Queries.Handlers
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-                StockQuantity = product.StockQuantity
+                ImageUrl = product.ImageUrl,
+                StockQuantity = product.StockQuantity,
+                Active = product.Active,
+                CreatedAt = product.CreatedAt,
+                UpdatedAt = product.UpdatedAt
             });
 
             return productDTOs;

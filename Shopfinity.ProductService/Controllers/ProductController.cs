@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopfinity.ProductService.Application.Commands;
 using Shopfinity.ProductService.Application.DTOs;
 using Shopfinity.ProductService.Application.Queries;
 
@@ -48,6 +49,58 @@ namespace Shopfinity.ProductService.API.Controllers
             }
 
             return Ok(product);
+        }
+
+        // POST: api/Product
+        [HttpPost]
+        public async Task<ActionResult> CreateProduct([FromBody] CreateProductCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetProductById), new { id = result }, result);
+        }
+
+        // PUT: api/Product/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateProduct(int id, [FromBody] UpdateProductCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != command.Id)
+            {
+                return BadRequest("Product ID in request body does not match URL.");
+            }
+
+            var result = await _mediator.Send(command);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/Product/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProduct(int id)
+        {
+            var command = new DeleteProductCommand(id);
+            var result = await _mediator.Send(command);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
     }
 }
