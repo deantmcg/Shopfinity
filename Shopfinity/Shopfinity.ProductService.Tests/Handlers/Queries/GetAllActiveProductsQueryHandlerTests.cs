@@ -24,6 +24,8 @@ namespace Shopfinity.ProductService.Tests.Handlers.Queries
 
             // Assert
             Assert.Equal(2, result.Count());
+            Assert.Equal(1, result.ElementAt(0).Id);
+            Assert.Equal(3, result.ElementAt(1).Id);
         }
     }
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Shopfinity.ProductService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2612cb531bffe5ec71c9eb61aea0985bd6164392")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75568c6ab8f51a28b49b79b2ade8897c6016741f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Shopfinity.ProductService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Shopfinity.ProductService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
