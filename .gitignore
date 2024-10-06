@@ -1,6 +1,21 @@
-# Visual Studio files
-.vs/
-
-# Ignore build outputs
+# Ignore build output directories
 bin/
 obj/
+
+# Ignore NuGet and build cache files
+*.nuget.cache
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.cache
+*.pdb
+*.dll
+*.exe
+
+# Ignore Rider project files
+.idea/
+.vs/
+
+# Ignore VS Code project files
+.vscode/

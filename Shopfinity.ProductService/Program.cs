@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore; // For Entity Framework Core
 using Shopfinity.ProductService.Infrastructure;
+using Shopfinity.ProductService.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,24 @@ builder.Services.AddMediatR(config =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+if (builder.Environment.IsDevelopment())
+{
+    // Configure local ASP.NET Core Identity for dev
+    builder.Services.AddDbContext<UserDbContext>(options =>
+        options.UseInMemoryDatabase("InMemoryUserDb"));
+
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<UserDbContext>()
+        .AddDefaultTokenProviders();
+}
+else
+{
+    // Use AWS Cognito for production
+    
+    // Todo: implement AWS Cognito
+    //builder.Services.AddAuthentication(...).AddJwtBearer(...);
+}
 
 var app = builder.Build();
 
