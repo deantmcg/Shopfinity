@@ -1,6 +1,6 @@
 ﻿using Shopfinity.ProductService.Infrastructure;
 
-public static class SeedData
+public static class SeedProductData
 {
     public static void Initialize(ProductDbContext context)
     {
