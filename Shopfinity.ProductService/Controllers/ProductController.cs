@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopfinity.ProductService.Application.Commands;
 using Shopfinity.ProductService.Application.DTOs;
 using Shopfinity.ProductService.Application.Queries;
+using Shopfinity.ProductService.Constants;
 
 namespace Shopfinity.ProductService.API.Controllers
 {
@@ -19,6 +21,7 @@ namespace Shopfinity.ProductService.API.Controllers
 
         // GET: api/Product
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
             var query = new GetAllProductsQuery();
@@ -28,6 +31,7 @@ namespace Shopfinity.ProductService.API.Controllers
 
         // GET: api/Product/active
         [HttpGet("active")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllActiveProducts()
         {
             var query = new GetAllActiveProductsQuery();
@@ -38,6 +42,7 @@ namespace Shopfinity.ProductService.API.Controllers
 
         // GET: api/Product/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<ProductDTO>> GetProductById(int id)
         {
             var query = new GetProductByIdQuery(id);
@@ -53,6 +58,7 @@ namespace Shopfinity.ProductService.API.Controllers
 
         // POST: api/Product
         [HttpPost]
+        [Authorize(Roles = $"{UserRole.Admin},{UserRole.Manager}")]
         public async Task<ActionResult> CreateProduct([FromBody] CreateProductCommand command)
         {
             if (!ModelState.IsValid)
@@ -66,6 +72,7 @@ namespace Shopfinity.ProductService.API.Controllers
 
         // PUT: api/Product/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = $"{UserRole.Admin},{UserRole.Manager}")]
         public async Task<ActionResult> UpdateProduct(int id, [FromBody] UpdateProductCommand command)
         {
             if (!ModelState.IsValid)
@@ -90,6 +97,7 @@ namespace Shopfinity.ProductService.API.Controllers
 
         // DELETE: api/Product/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult> DeleteProduct(int id)
         {
             var command = new DeleteProductCommand(id);
