@@ -6,83 +6,86 @@ using Moq;
 using Shopfinity.ProductService.Interfaces;
 using Shopfinity.ProductService.Models;
 
-public class AuthControllerTests
+namespace Shopfinity.ProductService.Tests.Controllers
 {
-    private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
-    private readonly Mock<ITokenService> _tokenServiceMock;
-    private readonly Mock<ILogger<AuthController>> _loggerMock;
-    private readonly AuthController _authController;
-
-    public AuthControllerTests()
+    public class AuthControllerTests
     {
-        // Mock UserManager
-        var userStore = new Mock<IUserStore<ApplicationUser>>();
-        _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStore.Object, null, null, null, null, null, null, null, null);
+        private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
+        private readonly Mock<ITokenService> _tokenServiceMock;
+        private readonly Mock<ILogger<AuthController>> _loggerMock;
+        private readonly AuthController _authController;
 
-        // Mock TokenService
-        _tokenServiceMock = new Mock<ITokenService>();
+        public AuthControllerTests()
+        {
+            // Mock UserManager
+            var userStore = new Mock<IUserStore<ApplicationUser>>();
+            _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStore.Object, null, null, null, null, null, null, null, null);
 
-        // Mock Logger
-        _loggerMock = new Mock<ILogger<AuthController>>();
+            // Mock TokenService
+            _tokenServiceMock = new Mock<ITokenService>();
 
-        // Instantiate AuthController
-        _authController = new AuthController(_userManagerMock.Object, _tokenServiceMock.Object, _loggerMock.Object);
-    }
+            // Mock Logger
+            _loggerMock = new Mock<ILogger<AuthController>>();
 
-    [Fact]
-    public async Task GenerateToken_ValidCredentials_ReturnsOkResultWithToken()
-    {
-        // Arrange
-        var loginModel = new LoginModel { Username = "testuser", Password = "password123" };
-        var user = new ApplicationUser { Id = "1", UserName = loginModel.Username };
-        var token = "valid-jwt-token";
+            // Instantiate AuthController
+            _authController = new AuthController(_userManagerMock.Object, _tokenServiceMock.Object, _loggerMock.Object);
+        }
 
-        _userManagerMock.Setup(um => um.FindByNameAsync(loginModel.Username)).ReturnsAsync(user);
-        _userManagerMock.Setup(um => um.CheckPasswordAsync(user, loginModel.Password)).ReturnsAsync(true);
-        _tokenServiceMock.Setup(ts => ts.GenerateTokenAsync(user)).ReturnsAsync(token);
+        [Fact]
+        public async Task GenerateToken_ValidCredentials_ReturnsOkResultWithToken()
+        {
+            // Arrange
+            var loginModel = new LoginModel { Username = "testuser", Password = "password123" };
+            var user = new ApplicationUser { Id = "1", UserName = loginModel.Username };
+            var token = "valid-jwt-token";
 
-        // Act
-        var result = await _authController.GenerateToken(loginModel) as OkObjectResult;
+            _userManagerMock.Setup(um => um.FindByNameAsync(loginModel.Username)).ReturnsAsync(user);
+            _userManagerMock.Setup(um => um.CheckPasswordAsync(user, loginModel.Password)).ReturnsAsync(true);
+            _tokenServiceMock.Setup(ts => ts.GenerateTokenAsync(user)).ReturnsAsync(token);
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(200, result.StatusCode);
-        Assert.Equal(token, Dynamic.InvokeGet(result.Value, "Token"));
-    }
+            // Act
+            var result = await _authController.GenerateToken(loginModel) as OkObjectResult;
 
-    [Fact]
-    public async Task GenerateToken_InvalidUsername_ReturnsUnauthorized()
-    {
-        // Arrange
-        var loginModel = new LoginModel { Username = "unknownuser", Password = "password123" };
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            Assert.Equal(token, Dynamic.InvokeGet(result.Value, "Token"));
+        }
 
-        _userManagerMock.Setup(um => um.FindByNameAsync(loginModel.Username)).ReturnsAsync((ApplicationUser)null);
+        [Fact]
+        public async Task GenerateToken_InvalidUsername_ReturnsUnauthorized()
+        {
+            // Arrange
+            var loginModel = new LoginModel { Username = "unknownuser", Password = "password123" };
 
-        // Act
-        var result = await _authController.GenerateToken(loginModel) as UnauthorizedObjectResult;
+            _userManagerMock.Setup(um => um.FindByNameAsync(loginModel.Username)).ReturnsAsync((ApplicationUser)null);
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(401, result.StatusCode);
-        Assert.Equal("Invalid username or password.", result.Value);
-    }
+            // Act
+            var result = await _authController.GenerateToken(loginModel) as UnauthorizedObjectResult;
 
-    [Fact]
-    public async Task GenerateToken_InvalidPassword_ReturnsUnauthorized()
-    {
-        // Arrange
-        var loginModel = new LoginModel { Username = "testuser", Password = "wrongpassword" };
-        var user = new ApplicationUser { Id = "1", UserName = loginModel.Username };
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(401, result.StatusCode);
+            Assert.Equal("Invalid username or password.", result.Value);
+        }
 
-        _userManagerMock.Setup(um => um.FindByNameAsync(loginModel.Username)).ReturnsAsync(user);
-        _userManagerMock.Setup(um => um.CheckPasswordAsync(user, loginModel.Password)).ReturnsAsync(false);
+        [Fact]
+        public async Task GenerateToken_InvalidPassword_ReturnsUnauthorized()
+        {
+            // Arrange
+            var loginModel = new LoginModel { Username = "testuser", Password = "wrongpassword" };
+            var user = new ApplicationUser { Id = "1", UserName = loginModel.Username };
 
-        // Act
-        var result = await _authController.GenerateToken(loginModel) as UnauthorizedObjectResult;
+            _userManagerMock.Setup(um => um.FindByNameAsync(loginModel.Username)).ReturnsAsync(user);
+            _userManagerMock.Setup(um => um.CheckPasswordAsync(user, loginModel.Password)).ReturnsAsync(false);
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(401, result.StatusCode);
-        Assert.Equal("Invalid username or password.", result.Value);
+            // Act
+            var result = await _authController.GenerateToken(loginModel) as UnauthorizedObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(401, result.StatusCode);
+            Assert.Equal("Invalid username or password.", result.Value);
+        }
     }
 }
