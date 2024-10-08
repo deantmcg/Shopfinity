@@ -34,7 +34,7 @@ namespace Shopfinity.ProductService.Application.Queries.Handlers
                 UpdatedAt = p.UpdatedAt
             }).ToList();
 
-            return productDTOs;
+            return productDTOs.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize);
         }
     }
 }

@@ -23,32 +23,36 @@ namespace Shopfinity.ProductService.API.Controllers
         }
 
         /// <summary>
-        /// Retrieves all products.
+        /// Retrieves all products with pagination.
         /// </summary>
-        /// <returns>List of all products.</returns>
+        /// <param name="pageNumber">The page number to retrieve.</param>
+        /// <param name="pageSize">The number of products per page.</param>
+        /// <returns>List of products.</returns>
         [HttpGet]
         [Authorize]
-        [SwaggerOperation(Summary = "Gets all products", Description = "Retrieves a list of all available products")]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
+        [SwaggerOperation(Summary = "Gets all products", Description = "Retrieves a paginated list of all available products.")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts(int pageNumber = 1, int pageSize = 10)
         {
-            _logger.LogInformation("Fetching all products");
-            var query = new GetAllProductsQuery();
+            _logger.LogInformation("Fetching all products with pagination");
+            var query = new GetAllProductsQuery { PageNumber = pageNumber, PageSize = pageSize};
             var products = await _mediator.Send(query);
             _logger.LogInformation("Products fetched successfully");
             return Ok(products);
         }
 
         /// <summary>
-        /// Retrieves all active products.
+        /// Retrieves all active products with pagination.
         /// </summary>
+        /// <param name="pageNumber">The page number to retrieve.</param>
+        /// <param name="pageSize">The number of products per page.</param>
         /// <returns>List of active products.</returns>
         [HttpGet("active")]
         [Authorize]
-        [SwaggerOperation(Summary = "Gets all active products", Description = "Retrieves a list of products that are currently active")]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllActiveProducts()
+        [SwaggerOperation(Summary = "Gets all active products", Description = "Retrieves a paginated list of active products.")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllActiveProducts(int pageNumber = 1, int pageSize = 10)
         {
-            _logger.LogInformation("Fetching all active products");
-            var query = new GetAllActiveProductsQuery();
+            _logger.LogInformation("Fetching all active products with pagination");
+            var query = new GetAllActiveProductsQuery { PageNumber = pageNumber, PageSize = pageSize };
             var products = await _mediator.Send(query);
             _logger.LogInformation("Fetched {Count} active products", products.Count());
 
