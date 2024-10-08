@@ -1,14 +1,11 @@
-﻿using Xunit;
-using Moq;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Shopfinity.ProductService.API.Controllers;
 using Shopfinity.ProductService.Application.Commands;
 using Shopfinity.ProductService.Application.DTOs;
 using Shopfinity.ProductService.Application.Queries;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 public class ProductControllerTests
 {
@@ -18,7 +15,8 @@ public class ProductControllerTests
     public ProductControllerTests()
     {
         _mediatorMock = new Mock<IMediator>();
-        _controller = new ProductController(_mediatorMock.Object);
+        var _loggerMock = new Mock<ILogger<ProductController>>();
+        _controller = new ProductController(_mediatorMock.Object, _loggerMock.Object);
     }
 
     // Test for Get All Products
@@ -27,10 +25,10 @@ public class ProductControllerTests
     {
         // Arrange
         var products = new List<ProductDTO>
-    {
-        new ProductDTO { Id = 1, Name = "Product 1" },
-        new ProductDTO { Id = 2, Name = "Product 2" }
-    };
+        {
+            new ProductDTO { Id = 1, Name = "Product 1" },
+            new ProductDTO { Id = 2, Name = "Product 2" }
+        };
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetAllProductsQuery>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync(products);
 

@@ -22,6 +22,11 @@ namespace Shopfinity.ProductService.Services
 
         public async Task<string> GenerateTokenAsync(ApplicationUser user)
         {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user), "User cannot be null");
+            }
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
 
