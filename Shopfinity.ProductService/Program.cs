@@ -25,6 +25,11 @@ app.Run();
 // Add and configure services
 void ConfigureServices(WebApplicationBuilder builder)
 {
+    // Add logging service
+    builder.Logging.ClearProviders();
+    builder.Logging.AddConsole();
+    builder.Logging.AddDebug();
+
     // Read JWT Settings
     builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
@@ -45,7 +50,10 @@ void ConfigureServices(WebApplicationBuilder builder)
 
     // Swagger Configuration for API Documentation
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.EnableAnnotations();
+    });
 
     // Register Token Service
     builder.Services.AddScoped<ITokenService, TokenService>();
